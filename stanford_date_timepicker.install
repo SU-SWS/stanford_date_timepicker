@@ -1,0 +1,34 @@
+<?php
+/**
+ * @file
+ * Installation and update functionality
+ * @author Shea McKinney <sheamck@stanford.edu>
+ */
+
+
+/**
+ * Implements hook_install().
+ */
+function stanford_date_timepicker_install() {
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function stanford_date_timepicker_uninstall() {
+
+}
+
+/**
+ * Implements hook_enable().
+ */
+function stanford_date_timepicker_enable() {
+
+}
+
+/**
+ * Implements hook_disable().
+ */
+function stanford_date_timepicker_disable() {
+
+}
