@@ -21,10 +21,34 @@
         var elem = $('#' + opts.id + ' ' + opts.selector, context).filter(":not(.su-proccessed)");
         elem.timepicker(opts.opt_settings);
         elem.addClass('su-proccessed');
+        elem.change(function(e) {
+          $(this).highlight();
+        });
       });
-
 
     }
   };
+
+
+$.fn.highlight = function() {
+
+  $(this).each(function () {
+      var el = $(this);
+      $("<div/>")
+      .width(el.outerWidth())
+      .height(el.outerHeight())
+      .css({
+          "position": "absolute",
+          "left": el.offset().left,
+          "top": el.offset().top,
+          "background-color": "#ffff99",
+          "opacity": ".7",
+          "z-index": "9999999"
+      }).appendTo('body').fadeOut(1000).queue(function () { $(this).remove(); });
+    el.focus();
+  });
+
+}
+
 
 })(jQuery);

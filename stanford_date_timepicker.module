@@ -99,13 +99,18 @@ function stanford_date_timepicker_date_popup_element_process($element, &$form_st
   // Process the formats based on the settings supplied in the settings form.
   $granularity = date_format_order($element['#date_format']);
   $time_granularity = array_intersect($granularity, array('hour', 'minute', 'second'));
-  $format = date_popup_format_to_popup_time(date_limit_format($element['#date_format'], $time_granularity), 'default');
+
+  // $format = date_popup_format_to_popup_time(date_limit_format($element['#date_format'], $time_granularity), 'default');
+  $format = date_limit_format($element['#date_format'], $time_granularity);
   $format = stanford_date_timepicker_format_to_popup_time($format);
+
+  $interval = (isset($element['#date_increment']) && !empty($element['#date_increment'])) ? $element['#date_increment'] : variable_get('stanford_date_timepicker_minute_increment', 5);
 
   // Settings array for the Drupal.settings.stanfordDateTimepicker.
   $settings = array(
     'controlType' => 'select',
     'timeFormat' => $format,
+    'stepMinute' => (int)$interval,
   );
 
   // Some special consideration has to be met. Process the field settings.
@@ -182,6 +187,11 @@ function stanford_date_timepicker_timepicker_format_replacements() {
     'A' => 'TT',
     'a' => 'tt',
     'i' => 'mm',
+    'g' => 'h',
+    'G' => 'H',
+    'H' => 'HH',
+    'h' => 'hh',
+    's' => 'ss',
     // 'iA' => 'mmTT',
     // 'ia' => 'mmtt',
   );
