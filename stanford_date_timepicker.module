@@ -2,6 +2,14 @@
 /**
  * @file
  * A companion module for interface changes to the date field.
+ * This module overrides the time field portion of date_popup fields to provide
+ * a better user experience.
+ *
+ * @credit
+ * Inspiration for some of this module comes from drupal_sensei's library
+ * sandbox: https://drupal.org/sandbox/wouters_frederik/1679556.
+ *
+ * @author Shea McKinney <sheamck@stanford.edu>
  */
 
 /**
@@ -31,7 +39,7 @@ function stanford_date_timepicker_permission() {
  */
 function stanford_date_timepicker_menu() {
   $items['admin/config/stanford-datetimepicker'] = array(
-    'title' => 'Datetimepicker Configuration',
+    'title' => 'Stanford Datetimepicker Configuration',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('stanford_date_timepicker_config_form'),
     'access arguments' => array('administer site configuration'),
@@ -46,49 +54,64 @@ function stanford_date_timepicker_menu() {
  */
 function stanford_date_timepicker_element_info_alter(&$type) {
 
-  // Remove the processing of the field and add our own.
+  // Hijack date_popup's processing of the field and add our own.
   $type['date_popup']['#process'] = array('stanford_date_timepicker_date_popup_element_process');
 
 }
 
 /**
- * [stanford_date_timepicker_date_popup_element_process description]
- * @param  [type] $element    [description]
- * @param  [type] $form_state [description]
- * @param  [type] $form       [description]
- * @return [type]             [description]
+ * Implements element_process.
+ * This function processes the date and time fields for date_popup before
+ * they are rendered to the page. This function also creates the javascript
+ * control settings for each field as the configuration for each can differ.
+ * @param  array $element   the form element array (see: field api)
+ * @param  array $form_state  the form state array (see: form api)
+ * @param  array $form   the form array (see: form api)
+ * @return array  the fully processed element array
  */
 function stanford_date_timepicker_date_popup_element_process($element, &$form_state, $form) {
 
+  // If the element is configured to not show don't bother processing it.
   if (date_hidden_element($element)) {
     return $element;
   }
 
+  // Load the date api.
   module_load_include('inc', 'date_api', 'date_api_elements');
 
+  // Continue to support the date picker from date_popup module.
   $element['#tree'] = TRUE;
   $element['#theme_wrappers'] = array('date_popup');
 
+  // Date popup does a good job at formatting the date and time field.
+  // Lets let it continue to do that.
   $element['date'] = date_popup_process_date_part($element);
   $element['time'] = date_popup_process_time_part($element);
 
-  // Add new timepicker variable...
+  // Add new timepicker variable for us to override with.
   $element['date']['#attributes']['class'][] = 'stanford-datepicker';
   $element['time']['#attributes']['class'][] = 'stanford-timepicker';
+
+  // We will add a rel field here in order for use in the JS. The field name
+  // is the key in the settings array for the field.
   $element['time']['#attributes']['rel'][] = $element['#field']['field_name'];
 
+  // Process the formats based on the settings supplied in the settings form.
   $granularity = date_format_order($element['#date_format']);
   $time_granularity = array_intersect($granularity, array('hour', 'minute', 'second'));
   $format = date_popup_format_to_popup_time(date_limit_format($element['#date_format'], $time_granularity), 'default');
   $format = stanford_date_timepicker_format_to_popup_time($format);
 
+  // Settings array for the Drupal.settings.stanfordDateTimepicker.
   $settings = array(
     'controlType' => 'select',
     'timeFormat' => $format,
   );
 
+  // Some special consideration has to be met. Process the field settings.
   $id = stanford_date_timepicker_js_settings_id($element['#id'], $element['#field']['field_name'], $settings);
 
+  // Add validation to the fields. data_popup does this and can continue to.
   if (isset($element['#element_validate'])) {
     array_push($element['#element_validate'], 'date_popup_validate');
   }
@@ -100,16 +123,18 @@ function stanford_date_timepicker_date_popup_element_process($element, &$form_st
    'form' => $form,
   );
 
+  // We jumped in pretty early to alter this field. Let others continue to.
   drupal_alter('date_popup_process', $element, $form_state, $context);
 
   return $element;
 }
 
 /**
- * [stanford_date_timepicker_js_settings_id description]
- * @param  [type] $id       [description]
- * @param  [type] $func     [description]
- * @param  [type] $settings [description]
+ * Create and set the javascript settings for the field. This function handles
+ * druplication and 'add another' functionality by keying the fields.
+ * @param  integer $id  The elements unique id.
+ * @param  string  $field_name  The name of the field being processed.
+ * @param  array $settings an array of field configuration options.
  * @return [type]           [description]
  */
 function stanford_date_timepicker_js_settings_id($id, $field_name, $settings) {
@@ -124,20 +149,23 @@ function stanford_date_timepicker_js_settings_id($id, $field_name, $settings) {
   // Increment the ids...Usefull for add another.
   $return_id = "$id-" . $id_count[$id]++;
 
+  // Date settings js array!
   $js_settings = array();
   $js_settings['stanfordDateTimepicker'][$return_id] = array();
   $js_settings['stanfordDateTimepicker'][$return_id]['id'] = $id;
   $js_settings['stanfordDateTimepicker'][$return_id]['opt_settings'] = $settings;
   $js_settings['stanfordDateTimepicker'][$return_id]['selector'] = '.stanford-timepicker';
 
+  // Add to js and return id.
   drupal_add_js($js_settings, 'setting');
   return $return_id;
 }
 
 /**
- * [stanford_date_timepicker_format_to_popup_time description]
- * @param  [type] $string [description]
- * @return [type]         [description]
+ * PHP and the JS plugin have different date formatting syntax. Normalize it
+ * through this function.
+ * @param  string $string the php date format string
+ * @return string the date string for js plugin.
  */
 function stanford_date_timepicker_format_to_popup_time($string) {
   $format = $string;
@@ -146,8 +174,8 @@ function stanford_date_timepicker_format_to_popup_time($string) {
 }
 
 /**
- * [stanford_date_timepicker_timepicker_format_replacements description]
- * @return [type] [description]
+ * Returns a keyed array for processing php date formats to the js plugin's
+ * @return array an array of string conversions.
  */
 function stanford_date_timepicker_timepicker_format_replacements() {
   return array(
@@ -183,12 +211,21 @@ function stanford_date_timepicker_field_settings_form($field, $instance, $has_da
 
 /**
  * Implements hook_js_alter().
+ * Since we are overriding date pop up but are using the same render functions
+ * we get some additional javascript settings that need to be removed. Go
+ * through the javascript array and remove these extra settings so they dont get
+ * called and cause conflicts with the new popup.
  */
 function stanford_date_timepicker_js_alter(&$javascript) {
 
   // Remove date popup js.
   // $path = drupal_get_path('module','date_popup') . "/date_popup.js";
   // unset($javascript[$path]);
+
+  // We still want to keep the date_popup.js file as we still use it for the
+  // date portion. Mabye later support a jquery verions high enough to allow
+  // for only the new plugin to be loaded. For now only the timepicker can be
+  // used.
 
   // Remove the timepicker functionality
   foreach($javascript['settings']['data'] as $index => $type) {
@@ -204,6 +241,8 @@ function stanford_date_timepicker_js_alter(&$javascript) {
 
 /**
  * Implements hook_preprocess().
+ * Allow this hook to add the neccessary libraries.
+ * Also add some default settings to the js array.
  */
 function stanford_date_timepicker_preprocess_html(&$variables) {
   // Add timepicker customizations.
@@ -217,10 +256,10 @@ function stanford_date_timepicker_preprocess_html(&$variables) {
   // Add the settings to the page for the other timepicker classes.
   drupal_add_js(array(
     'stanford_date_timepicker' => array(
-      'classes' => variable_get('timepicker_activation_class', ''),
-      'default_date_format' => check_plain(variable_get('timepicker_default_date_format', 'yy-mm-dd')),
-      'default_time_format' => check_plain(variable_get('timepicker_default_time_format', 'hh:mm')),
-      'default_separator' => check_plain(variable_get('timepicker_default_separator', 'hh:mm')),
+      'classes' => variable_get('stanford_date_timepicker_activation_class', ''),
+      'default_date_format' => variable_get('stanford_date_timepicker_default_date_format', 'yy-mm-dd'),
+      'default_time_format' => variable_get('stanford_date_timepicker_default_time_format', 'hh:mm'),
+      'default_separator' => variable_get('stanford_date_timepicker_default_separator', ' '),
     )), 'setting');
 
 
