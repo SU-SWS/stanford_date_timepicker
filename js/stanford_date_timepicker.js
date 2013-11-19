@@ -18,18 +18,33 @@
       // Drupal.settings... We need to add the pop up functionality back to
       // those elements.
       $.each(Drupal.settings.stanfordDateTimepicker, function(i, opts) {
+
+        // Add the timepicker to the time field.
         var elem = $('#' + opts.id + ' ' + opts.selector, context).filter(":not(.su-proccessed)");
         elem.timepicker(opts.opt_settings);
         elem.addClass('su-proccessed');
+
+        // Add a yellow highlight to the time field on change.
         elem.change(function(e) {
           $(this).highlight();
         });
+
       });
+
+      // Add a yellow highlight to the date field on change.
+      $('.field-widget-date-popup .stanford-datepicker')
+      .filter(":not(.su-proccessed)")
+      .change(function(e){
+          $(this).highlight();
+      })
+      .addClass('su-proccessed');
 
     }
   };
 
-
+/**
+ * A quick yellow highlight that fades out.
+ */
 $.fn.highlight = function() {
 
   $(this).each(function () {
@@ -48,7 +63,6 @@ $.fn.highlight = function() {
     el.focus();
   });
 
-}
-
+};
 
 })(jQuery);
