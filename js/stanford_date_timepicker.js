@@ -32,7 +32,7 @@
       });
 
       // Add a yellow highlight to the date field on change.
-      $('.field-widget-date-popup .stanford-datepicker')
+      $('.stanford-datepicker', context)
       .filter(":not(.su-proccessed)")
       .change(function(e){
           $(this).highlight();
