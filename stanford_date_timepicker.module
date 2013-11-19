@@ -18,7 +18,9 @@
 function stanford_date_timepicker_help($path, $arg) {
   switch ($path) {
     case 'admin/help#stanford_date_timepicker':
-      return '<p>' . t('If you have any questions please email %email.', array('%email' => 'helpsu@stanford.edu')) . '</p>';
+//      return '<p>' . t('If you have any questions please email %email.', array('%email' => 'helpsu@stanford.edu')) . '</p>';
+// @todo: link to README at the least.
+      return;
   }
 }
 
@@ -28,8 +30,8 @@ function stanford_date_timepicker_help($path, $arg) {
 function stanford_date_timepicker_permission() {
   return array(
     'administer stanford date timepicker' => array(
-      'title' => t('Administer Stanford date timepicker settings'),
-      'description' => t('Administer Stanford date timepicker settings.'),
+      'title' => t('Administer Stanford Date Timepicker settings'),
+      'description' => t('Administer Stanford Date Timepicker settings.'),
     ),
   );
 }
@@ -39,7 +41,7 @@ function stanford_date_timepicker_permission() {
  */
 function stanford_date_timepicker_menu() {
   $items['admin/config/stanford-datetimepicker'] = array(
-    'title' => 'Stanford Datetimepicker Configuration',
+    'title' => 'Stanford Date Timepicker Configuration',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('stanford_date_timepicker_config_form'),
     'access arguments' => array('administer site configuration'),
@@ -116,7 +118,7 @@ function stanford_date_timepicker_date_popup_element_process($element, &$form_st
   // Some special consideration has to be met. Process the field settings.
   $id = stanford_date_timepicker_js_settings_id($element['#id'], $element['#field']['field_name'], $settings);
 
-  // Add validation to the fields. data_popup does this and can continue to.
+  // Add validation to the fields. date_popup does this and can continue to.
   if (isset($element['#element_validate'])) {
     array_push($element['#element_validate'], 'date_popup_validate');
   }
@@ -151,7 +153,7 @@ function stanford_date_timepicker_js_settings_id($id, $field_name, $settings) {
     $id_count[$id] = 0;
   }
 
-  // Increment the ids...Usefull for add another.
+  // Increment the ids...Useful for add another.
   $return_id = "$id-" . $id_count[$id]++;
 
   // Date settings js array!
@@ -251,7 +253,7 @@ function stanford_date_timepicker_js_alter(&$javascript) {
 
 /**
  * Implements hook_preprocess().
- * Allow this hook to add the neccessary libraries.
+ * Allow this hook to add the necessary libraries.
  * Also add some default settings to the js array.
  */
 function stanford_date_timepicker_preprocess_html(&$variables) {

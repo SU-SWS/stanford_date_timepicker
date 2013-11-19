@@ -14,15 +14,17 @@ INSTALLATION
 --------------------------------------------------------------------------------
 1. Download
 https://github.com/trentrichardson/jQuery-Timepicker-Addon
-Put the resources in the libraries/all/jquery-ui-timepicker/ folder
+Put the resources in the libraries/jquery-ui-timepicker/ folder
 
 Current supported version is 1.4
 
 Final output should be:
 sites/all/libraries/jquery-ui-timepicker/jquery-ui-timepicker-addon.js
+OR
+sites/default/libraries/jquery-ui-timepicker/jquery-ui-timepicker-addon.js
 
 2. Configure
-Set any field to date_popup with a time granularity of atleast hours and you will see a timepicker when you click into the time field instead of the default text only javascript supported option.
+Set any field to date_popup with a time granularity of at least hours and you will see a timepicker when you click into the time field, instead of the default text-only javascript supported option.
 
 Configuration page:
 /admin/config/stanford-datetimepicker
