@@ -3,6 +3,8 @@
  * Adds attach behaviour to drupal settings for timepicker plugin.
  */
 
+Drupal.settings.stanfordDateTimepicker = typeof(Drupal.settings.stanfordDateTimepicker) == 'undefined' ? [] : Drupal.settings.stanfordDateTimepicker;
+
 (function($){
 
   Drupal.behaviors.stanford_date_timepicker = {
