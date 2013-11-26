@@ -50,7 +50,10 @@ Drupal.settings.stanfordDateTimepicker = typeof(Drupal.settings.stanfordDateTime
 $.fn.highlight = function() {
 
   $(this).each(function () {
+
       var el = $(this);
+      el.css({position:"relative",zIndex:'1',background:"transparent"});
+
       $("<div/>")
       .width(el.outerWidth())
       .height(el.outerHeight())
@@ -60,7 +63,7 @@ $.fn.highlight = function() {
           "top": el.offset().top,
           "background-color": "#ffff99",
           "opacity": ".7",
-          "z-index": "9999999"
+          "z-index": "0"
       }).appendTo('body').fadeOut(1000).queue(function () { $(this).remove(); });
     el.focus();
   });
