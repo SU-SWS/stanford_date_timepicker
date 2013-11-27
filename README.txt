@@ -14,7 +14,7 @@ INSTALLATION
 --------------------------------------------------------------------------------
 1. Download
 https://github.com/trentrichardson/jQuery-Timepicker-Addon
-Put the resources in the libraries/jquery-ui-timepicker/ folder
+Put the contents of the "src" directory into the libraries/jquery-ui-timepicker/ folder
 
 Current supported version is 1.4
 
