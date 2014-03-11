@@ -1,0 +1,7 @@
+Stanford Date Timepicker 7.x-xx-xxxx xxxx-xx-xx
+------------------------------------------------
+
+7.x-1.0-alpha1 | 2014-03-11
+------------------------------------------------
+- Initial Feature release
+- https://drupal.org/project/stanford_date_timepicker
