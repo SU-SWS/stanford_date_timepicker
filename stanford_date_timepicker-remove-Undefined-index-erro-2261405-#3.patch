@@ -1,0 +1,59 @@
+From d758f035885d6fc62bab054279cf68bf80ee4f69 Mon Sep 17 00:00:00 2001
+From: Sangwook Lee <aladdin@plusgenie.com>
+Date: Thu, 8 May 2014 16:32:15 +0100
+Subject: [PATCH]: 2261405:  stanford_date_timepicker: remove Undefined index error
+
+Signed-off-by: Sangwook Lee <aladdin@plusgenie.com>
+---
+ stanford_date_timepicker.install | 2 +-
+ stanford_date_timepicker.module  | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/stanford_date_timepicker.install b/stanford_date_timepicker.install
+index 09bf6aa..41750b0 100644
+--- a/stanford_date_timepicker.install
++++ b/stanford_date_timepicker.install
+@@ -23,7 +23,7 @@ function stanford_date_timepicker_uninstall() {
+   variable_del('stanford_date_timepicker_default_date_format');
+   variable_del('stanford_date_timepicker_default_time_format');
+   variable_del('stanford_date_timepicker_default_separator');
+-  variable_det('stanford_date_timepicker_minute_increment');
++  variable_del('stanford_date_timepicker_minute_increment');
+ 
+ }
+ 
+diff --git a/stanford_date_timepicker.module b/stanford_date_timepicker.module
+index 12f5795..59bafd0 100644
+--- a/stanford_date_timepicker.module
++++ b/stanford_date_timepicker.module
+@@ -96,7 +96,8 @@ function stanford_date_timepicker_date_popup_element_process($element, &$form_st
+ 
+   // We will add a rel field here in order for use in the JS. The field name
+   // is the key in the settings array for the field.
+-  $element['time']['#attributes']['rel'][] = $element['#field']['field_name'];
++  //$element['time']['#attributes']['rel'][] = $element['#field']['field_name'];
++  $element['time']['#attributes']['rel'][] = '';
+ 
+   // Process the formats based on the settings supplied in the settings form.
+   $granularity = date_format_order($element['#date_format']);
+@@ -116,7 +117,7 @@ function stanford_date_timepicker_date_popup_element_process($element, &$form_st
+   );
+ 
+   // Some special consideration has to be met. Process the field settings.
+-  $id = stanford_date_timepicker_js_settings_id($element['#id'], $element['#field']['field_name'], $settings);
++  $id = stanford_date_timepicker_js_settings_id($element['#id'], '', $settings);
+ 
+   // Add validation to the fields. date_popup does this and can continue to.
+   if (isset($element['#element_validate'])) {
+@@ -144,7 +145,7 @@ function stanford_date_timepicker_date_popup_element_process($element, &$form_st
+  * @param  array $settings an array of field configuration options.
+  * @return [type]           [description]
+  */
+-function stanford_date_timepicker_js_settings_id($id, $field_name, $settings) {
++function stanford_date_timepicker_js_settings_id($id, $field_name = NULL, $settings) {
+   static $id_count = array();
+ 
+   // We use a static array to account for possible multiple form_builder()
+-- 
+1.8.4.2
+
