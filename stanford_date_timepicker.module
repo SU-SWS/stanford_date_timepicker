@@ -238,7 +238,7 @@ function stanford_date_timepicker_js_alter(&$javascript) {
   foreach($javascript['settings']['data'] as $index => $type) {
     if(isset($type['datePopup']) && is_array($type['datePopup'])) {
       $setting = array_pop($type['datePopup']);
-      if($setting['func'] == 'timeEntry') {
+      if(isset($setting['func']) && $setting['func'] == 'timeEntry') {
         unset($javascript['settings']['data'][$index]);
       }
     }
