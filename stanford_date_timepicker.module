@@ -85,6 +85,13 @@ function stanford_date_timepicker_date_popup_element_process($element, &$form_st
   $element['#tree'] = TRUE;
   $element['#theme_wrappers'] = array('date_popup');
 
+  if (!empty($element['#ajax'])) {
+    $element['#ajax'] += array(
+      'trigger_as' => array('name' =>$element['#name']),
+      'event' => 'change',
+    );
+  }
+
   // Date popup does a good job at formatting the date and time field.
   // Lets let it continue to do that.
   $element['date'] = date_popup_process_date_part($element);
