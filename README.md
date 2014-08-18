@@ -12,10 +12,22 @@ Installation
 
 Install this module like any other module. [See Drupal Documentation](https://drupal.org/documentation/install/modules-themes/modules-7)
 
+Download
+https://github.com/trentrichardson/jQuery-Timepicker-Addon
+Put the contents of the "src" directory into the libraries/jquery-ui-timepicker/ folder
+
+Current supported version is 1.4
+
+Final output should be:
+sites/all/libraries/jquery-ui-timepicker/jquery-ui-timepicker-addon.js
+OR
+sites/default/libraries/jquery-ui-timepicker/jquery-ui-timepicker-addon.js
+
+
 Configuration
 ---
 
-Nothing special needed.
+Set any field to date_popup with a time granularity of at least hours and you will see a timepicker when you click into the time field instead of the default text-only javascript supported option.
 
 Troubleshooting
 ---
