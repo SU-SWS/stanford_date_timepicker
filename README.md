@@ -1,5 +1,5 @@
 #[Stanford Date Timepicker](https://github.com/SU-SWS/stanford_date_timepicker)
-##### Version: 7.x-1.0
+##### Version: 7.x-1.1
 
 Maintainers: [sherakama](https://github.com/sherakama)
 [Changelog.txt](CHANGELOG.txt)
