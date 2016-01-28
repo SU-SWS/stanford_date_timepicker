@@ -6,3 +6,4 @@ package = "Stanford"
 dependencies[] = libraries
 dependencies[] = date_popup
 project status url = git@github.com:SU-SWS/stanford_date_timepicker.git
+configure = admin/config/stanford/datetimepicker
